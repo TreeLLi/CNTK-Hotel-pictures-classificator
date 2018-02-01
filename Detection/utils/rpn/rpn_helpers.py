@@ -146,5 +146,3 @@ def create_proposal_target_layer(rpn_rois, scaled_gt_boxes, num_classes):
     bbox_inside_weights = ptl.outputs[3]
 
     return rois, label_targets, bbox_targets, bbox_inside_weights
-
-

@@ -462,7 +462,7 @@ def train_faster_rcnn_e2e(base_model_file_name, debug_output=False):
 def train_faster_rcnn_alternating(base_model_file_name, debug_output=False):
     '''
         4-Step Alternating Training scheme from the Faster R-CNN paper:
-        
+
         # Create initial network, only rpn, without detection network
             # --> train only the rpn (and conv3_1 and up for VGG16)
         # buffer region proposals from rpn
@@ -748,4 +748,3 @@ if __name__ == '__main__':
                                   nmsThreshold=cfg["CNTK"].RESULTS_NMS_THRESHOLD,
                                   nmsConfThreshold=cfg["CNTK"].RESULTS_NMS_CONF_THRESHOLD,
                                   bgrPlotThreshold=cfg["CNTK"].RESULTS_BGR_PLOT_THRESHOLD)
-

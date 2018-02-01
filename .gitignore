@@ -219,3 +219,5 @@ Detection/FasterRCNN/eval.py
 /CNTK.VC.VC.opendb
 /Local
 
+# my_added
+.env/

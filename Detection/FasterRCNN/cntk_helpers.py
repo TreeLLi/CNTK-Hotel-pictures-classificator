@@ -30,4 +30,3 @@ def regress_rois(roi_proposals, roi_regression_factors, labels, dims_input):
         roi_proposals[:,3] = roi_proposals[:,3].clip(top, bottom)
 
     return roi_proposals
-
