@@ -70,7 +70,7 @@ def scaleCropBboxes(rectsIn, scaleFactor, imgWidth, imgHeight):
 ####################################
 # Main
 ####################################
-imgFilenames = [f for f in os.listdir(imgDir) if ((f.lower().endswith(".jpg")) or (f.lower().endswith(".png")))]
+imgFilenames = [f for f in os.listdir(imgDir) if ((f.lower().endswith(".jpg")) or (f.lower().endswith(".png")) or (f.lower().endswith(".jpeg")))]
 
 # loop over each image and get annotation
 for imgFilenameIndex,imgFilename in enumerate(imgFilenames):
