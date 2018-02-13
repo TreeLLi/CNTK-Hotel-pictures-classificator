@@ -18,10 +18,19 @@ from helpers import *
 # Parameters
 ####################################
 #change it to your images directory. Run this script separately for each folder
-imgDir = "../../DataSets/HotailorPOC2/testImages"
+imgDir = "../../DataSets/HotailorPOC2/positive"
 
 #change it to your classes names
-classes = ["curtain", "pillow", "bed", "lamp", "toilet", "sink", "tap", "towel"]
+classes = []
+bathroomClass = ["washing machine", "bathtub", "hair dryer", "toilet", "sink", "tap", "towel"]
+roomClass = ["door","window", "sofa", "TV", "picture", "curtain", "heater", "quilt", "wardrobe", "pillow", "bed", "lamp", "telephone", "table", "chair"]
+kitchenClass = ["oven", "refrigerator", "gas stove", "microwave", "kettle", "coffe machine", "toaster", "kitchen ventilator", "table", "chair", "food", "cutlery", "pan", "flowers", "clock"]
+officeClass = ["desk", "computer", "speakers", "keyboard", "mouse"]
+
+# classes += bathroomClass
+# classes += roomClass
+# classes += kitchenClass
+classes += officeClass
 
 
 #no need to change these
@@ -51,6 +60,7 @@ for objectIndex,objectName in enumerate(objectNames):
 # loop over all images
 imgFilenames = getFilesInDirectory(imgDir, ".jpg")
 imgFilenames += getFilesInDirectory(imgDir, ".png")
+imgFilenames += getFilesInDirectory(imgDir, ".jpeg")
 for imgIndex, imgFilename in enumerate(imgFilenames):
     print (imgIndex, imgFilename)
     labelsPath = os.path.join(imgDir, imgFilename[:-4] + ".bboxes.labels.tsv")
