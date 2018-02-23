@@ -1,0 +1,4 @@
+__background__	0
+toilet	1
+sink	2
+tap	3

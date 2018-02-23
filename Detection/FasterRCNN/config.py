@@ -87,7 +87,7 @@ __C.CNTK.TEST_ROI_FILE = "test_roi_file.txt"
 
 if __C.CNTK.DATASET == "NewDataSetHotailorPOC2Mix": #name of your dataset. Must match the name set with property '__C.CNTK.DATASET'
     __C.CNTK.MAP_FILE_PATH = "../../DataSets/NewDataSetHotailorPOC2Mix"
-    __C.CNTK.NUM_TRAIN_IMAGES = 459 # number of images in 'positive' folder
+    __C.CNTK.NUM_TRAIN_IMAGES = 1 # number of images in 'positive' folder
     __C.CNTK.NUM_TEST_IMAGES = 99 # number of images in 'testImages' folder
     __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 16\n'scales':\n - 4 \n - 8 \n - 12"
 

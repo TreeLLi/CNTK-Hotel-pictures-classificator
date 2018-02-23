@@ -7,9 +7,6 @@
 import numpy as np
 import os
 
-imgDir = "../../../DataSets/NewDataSetHotailorPOC2Mix"
-
-
 def _getFilesInDirectory(directory, postfix = ""):
     fileNames = [s for s in os.listdir(directory) if not os.path.isdir(os.path.join(directory, s))]
     if not postfix or postfix == "":
