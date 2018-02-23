@@ -7,6 +7,9 @@
 import numpy as np
 import os
 
+imgDir = "../../../DataSets/NewDataSetHotailorPOC2Mix"
+
+
 def _getFilesInDirectory(directory, postfix = ""):
     fileNames = [s for s in os.listdir(directory) if not os.path.isdir(os.path.join(directory, s))]
     if not postfix or postfix == "":
@@ -25,6 +28,9 @@ def _get_image_paths(img_dir, training_set):
         sub_dir_path = os.path.join(img_dir, subdir)
         imgFilenames = _getFilesInDirectory(sub_dir_path, ".jpg")
         imgFilenames += _getFilesInDirectory(sub_dir_path, ".png")
+        imgFilenames += _getFilesInDirectory(sub_dir_path, ".jpeg")
+        imgFilenames += _getFilesInDirectory(sub_dir_path, ".JPEG")
+
 
         for img in imgFilenames:
             image_paths.append("{}/{}".format(subdir, img))
@@ -130,4 +136,3 @@ def parse_class_map_file(class_map_file):
         class_list[class_id] = class_name
 
     return class_list
-
