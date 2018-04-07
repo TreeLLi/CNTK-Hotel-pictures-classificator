@@ -48,6 +48,7 @@ def visualizeResultsFaster(imgPath, roiLabels, roiScores, roiRelCoords, padWidth
     cv_img = cv2.imread(imgPath)
     rgb_img = cv2.cvtColor(cv_img,cv2.COLOR_BGR2RGB)
     resized = cv2.resize(rgb_img, (imgWidth, imgHeight), interpolation=cv2.INTER_NEAREST)
+    # imgDebug identifier used in the name of image for further debuging
     imgDebug = cv2.copyMakeBorder(resized,v_border,v_border,h_border,h_border,cv2.BORDER_CONSTANT,value=PAD_COLOR)
     rect_scale = 800 / padWidth
 
@@ -72,6 +73,7 @@ def visualizeResultsFaster(imgPath, roiLabels, roiScores, roiRelCoords, padWidth
             # init drawing parameters
             thickness = 1
             if label == 0:
+                # red for the prediction without confidence, i.e. under the threshold 
                 color = (255, 0, 0)
             else:
                 color = getColorsPalette()[label]
@@ -84,6 +86,7 @@ def visualizeResultsFaster(imgPath, roiLabels, roiScores, roiRelCoords, padWidth
 
             # draw in higher iterations only the detections
             if iter == 0 and boDrawNegativeRois:
+                # draw negative detections, i.e. the predictions under the threshold
                 drawRectangles(imgDebug, [rect], color=color, thickness=thickness)
             elif iter==1 and label > 0:
                 if not nmsKeepIndices or (roiIndex in nmsKeepIndices):
