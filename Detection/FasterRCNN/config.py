@@ -27,8 +27,8 @@ __C.CNTK.FORCE_DETERMINISTIC = True
 __C.CNTK.FAST_MODE = False
 
 # set it to your custom dataset name
-__C.CNTK.DATASET = "NewDataSetHotailorPOC2Mix"
-__C.CNTK.BASE_MODEL = "AlexNet" # "VGG16" or "AlexNet" or "VGG19"
+__C.CNTK.DATASET = "HotailorPOC2"
+__C.CNTK.BASE_MODEL = "VGG16" # "VGG16" or "AlexNet" or "VGG19"
 __C.CNTK.CONV_BIAS_INIT = 0.0
 __C.CNTK.SIGMA_RPN_L1 = 3.0
 __C.CNTK.SIGMA_DET_L1 = 1.0
@@ -85,12 +85,18 @@ __C.CNTK.TEST_MAP_FILE = "test_img_file.txt"
 __C.CNTK.TRAIN_ROI_FILE = "train_roi_file.txt"
 __C.CNTK.TEST_ROI_FILE = "test_roi_file.txt"
 
-if __C.CNTK.DATASET == "NewDataSetHotailorPOC2Mix": #name of your dataset. Must match the name set with property '__C.CNTK.DATASET'
+if __C.CNTK.DATASET == "HotailorPOC2": #name of your dataset. Must match the name set with property '__C.CNTK.DATASET'
+    __C.CNTK.MAP_FILE_PATH = "../../DataSets/HotailorPOC2"
+    __C.CNTK.NUM_TRAIN_IMAGES = 82 # number of images in 'positive' folder
+    __C.CNTK.NUM_TEST_IMAGES = 20 # number of images in 'testImages' folder
+    __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 16\n'scales':\n - 4 \n - 8 \n - 12"
+elif __C.CNTK.DATASET == "NewDataSetHotailorPOC2Mix": #name of your dataset. Must match the name set with property '__C.CNTK.DATASET'
     __C.CNTK.MAP_FILE_PATH = "../../DataSets/NewDataSetHotailorPOC2Mix"
     __C.CNTK.NUM_TRAIN_IMAGES = 149 # number of images in 'positive' folder
     __C.CNTK.NUM_TEST_IMAGES = 22 # number of images in 'testImages' folder
     __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 16\n'scales':\n - 4 \n - 8 \n - 12"
 
+    
 #
 # Base models
 #
