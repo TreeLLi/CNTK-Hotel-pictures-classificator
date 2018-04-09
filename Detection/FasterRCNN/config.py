@@ -115,7 +115,7 @@ if __C.CNTK.BASE_MODEL == "AlexNet":
     __C.CNTK.FRCN_LR_FACTOR = 1.0
 
 if __C.CNTK.BASE_MODEL == "VGG16":
-    __C.CNTK.BASE_MODEL_FILE = "VGG16_ImageNet_Caffe.model"
+    __C.CNTK.BASE_MODEL_FILE = "VGG16.model"
     __C.CNTK.FEATURE_NODE_NAME = "data"
     __C.CNTK.LAST_CONV_NODE_NAME = "relu5_3"
     __C.CNTK.START_TRAIN_CONV_NODE_NAME = "pool2" # __C.CNTK.FEATURE_NODE_NAME
