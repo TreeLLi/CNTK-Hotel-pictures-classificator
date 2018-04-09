@@ -12,7 +12,7 @@ def download_dataset():
     if not (os.path.exists(os.path.join(dataset_folder, "positive")) and os.path.exists(os.path.join(dataset_folder, "positive")) and os.path.exists(os.path.join(dataset_folder, "positive"))):
         filename = os.path.join(dataset_folder, "HotailorPOC2.zip")
         if not os.path.exists(filename):
-            url = "https://gitlab.doc.ic.ac.uk/g1753004/dataset/blob/master/HotailorPOC2.zip"
+            url = "https://media.githubusercontent.com/media/TreeLLi/CNTK_Room-Recognition_Datasets/master/HotailorPOC2.zip"
             print('Downloading data from ' + url + '...')
             urlretrieve(url, filename)
             
