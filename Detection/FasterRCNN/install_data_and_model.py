@@ -37,4 +37,4 @@ if __name__ == '__main__':
 
     ##generates metadata for dataset required by FasterRCNN.py script
     print("Creating mapping files for data set..")
-    # create_mappings(base_folder)
+    create_mappings(base_folder)

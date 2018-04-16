@@ -90,6 +90,7 @@ def set_global_vars(use_arg_parser = True):
     globalvars['train_conv'] = cfg["CNTK"].TRAIN_CONV_LAYERS
     globalvars['train_e2e'] = cfg["CNTK"].TRAIN_E2E
 
+    globalvars['fea_map_dim'] = cfg["CNTK"].FEA_MAP_DIM
 
     if use_arg_parser:
         parser = argparse.ArgumentParser()
@@ -223,15 +224,17 @@ def clone_conv_layers(base_model):
 def create_fast_rcnn_predictor(conv_out, rois, fc_layers):
     # RCNN
     roi_out = roipooling(conv_out, rois, cntk.MAX_POOLING, (roi_dim, roi_dim), spatial_scale=1/16.0)
+    print ("roi_out shape:{}".format(roi_out.shape))
     fc_out = fc_layers(roi_out)
 
     # prediction head
-    W_pred = parameter(shape=(4096, globalvars['num_classes']), init=normal(scale=0.01), name="cls_score.W")
+    fea_map_dim = globalvars['fea_map_dim']
+    W_pred = parameter(shape=(fea_map_dim, globalvars['num_classes']), init=normal(scale=0.01), name="cls_score.W")
     b_pred = parameter(shape=globalvars['num_classes'], init=0, name="cls_score.b")
     cls_score = plus(times(fc_out, W_pred), b_pred, name='cls_score')
 
     # regression head
-    W_regr = parameter(shape=(4096, globalvars['num_classes']*4), init=normal(scale=0.001), name="bbox_regr.W")
+    W_regr = parameter(shape=(fea_map_dim, globalvars['num_classes']*4), init=normal(scale=0.001), name="bbox_regr.W")
     b_regr = parameter(shape=globalvars['num_classes']*4, init=0, name="bbox_regr.b")
     bbox_pred = plus(times(fc_out, W_regr), b_regr, name='bbox_regr')
 

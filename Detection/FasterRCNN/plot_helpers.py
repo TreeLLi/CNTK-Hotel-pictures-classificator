@@ -1,5 +1,4 @@
 # Copyright (c) Microsoft. All rights reserved.
-
 # Licensed under the MIT license. See LICENSE.md file in the project root
 # for full license information.
 # ==============================================================================
@@ -24,6 +23,7 @@ available_font = "arial.ttf"
 try:
     dummy = ImageFont.truetype(available_font, 16)
 except:
+    print (available_font + " not found\n")
     available_font = "FreeMono.ttf"
 
 
@@ -187,7 +187,7 @@ def eval_and_plot_faster_rcnn(eval_model, num_images_to_plot, test_map_file, img
                                      classes, nmsKeepIndices=nmsKeepIndices,
                                      boDrawNegativeRois=drawNegativeRois,
                                      decisionThreshold=bgrPlotThreshold)
-        imsave("{}/{}_regr_{}".format(results_base_path, i, os.path.basename(imgPath)), img)
+        imsave("{}/{}_regr_{}".format(results_base_path, i, os.path.basename(imgPath).replace(".jpg", ".png")), img)
 
 
 ####################################
