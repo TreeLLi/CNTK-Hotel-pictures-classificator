@@ -8,7 +8,7 @@ import os
 import numpy as np
 
 from utils.nms.nms_wrapper import apply_nms_to_test_set_results
-from det_analyzer import confusion_classes, log_fp_errors
+from utils.map.det_analyzer import confusion_classes, log_fp_errors
 
 
 def evaluate_detections(all_boxes, all_gt_infos, classes, use_07_metric=False, apply_mms=True, nms_threshold=0.5, conf_threshold=0.0):
@@ -74,7 +74,7 @@ def _evaluate_detections(classIndex, className, all_boxes, all_gt_infos, overlap
     # compute precision / recall / ap
     rec, prec, ap = _voc_computePrecisionRecallAp(
         className,
-        class_recs=all_gt_infos,
+        all_gt_infos=all_gt_infos,
         confidence=detConfidences,
         image_ids=detImgIndices,
         BB=detBboxes,
@@ -138,8 +138,8 @@ def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids
     # statics for false positive results
     # 0:localization error, 1:confusion with similiar objects
     # 2:confusion with other objects, 3:confusion with background
-    # 4:duplicated detection
-    fp_errors = np.zeros(5)
+    # 4:duplicated detection 5:true-positive
+    fp_errors = np.zeros(6).astype(int)
     sim_classes, otr_classes = confusion_classes(className)
     
     for d in range(nd):
@@ -154,6 +154,7 @@ def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids
                 if not R['det'][jmax]:
                     tp[d] = 1.
                     R['det'][jmax] = 1
+                    fp_errors[5] += 1
                 else:
                     # duplicate detection on the detected gt
                     fp[d] = 1.
@@ -165,21 +166,22 @@ def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids
             if ovmax >= 0.1:
                 fp_errors[0] += 1
             else:
-                # confuse with similar objects
+                # confuse with objects
                 sim_ovmax_cls, sim_ovmax = max_overlap_with_classes(list(sim_classes), image_ids[d], all_gt_infos, bb)
                 otr_ovmax_cls, otr_ovmax = max_overlap_with_classes(list(otr_classes), image_ids[d], all_gt_infos, bb)
 
-                if sim_ovmax>=otr_max and sim_ovmax>0.1:
+                if sim_ovmax>=otr_ovmax and sim_ovmax>0.1:
                     fp_errors[1] += 1
-                elif otr_ovmax>=sim_max and otr_ovmax>0.1:
+                elif otr_ovmax>=sim_ovmax and otr_ovmax>0.1:
                     fp_errors[2] += 1
                 else:
+                    # confusion with background
                     fp_errors[3] += 1
 
     log_fp_errors(className, fp_errors)
                     
     # compute precision recall
-    npos = sum([len(cr['bbox']) for cr in class_recs])
+    npos = sum([len(cr['bbox']) for cr in all_gt_infos[className]])
     fp = np.cumsum(fp)
     tp = np.cumsum(tp)
     rec = tp / float(npos)
@@ -219,6 +221,9 @@ def max_overlap_with_class(className, image_id, all_gt_infos, bb):
     return ovmax, max_id
 
 def max_overlap_with_classes(classes, image_id, all_gt_infos, bb):
+    if classes is None or len(classes)==0:
+        return "", 0
+    
     ovmaxes = []
     for cls in classes:
         ovmax, _ = max_overlap_with_class(cls, image_id, all_gt_infos, bb)

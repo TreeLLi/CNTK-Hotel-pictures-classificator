@@ -39,7 +39,7 @@ __C.CNTK.L2_REG_WEIGHT = 0.0005
 __C.CNTK.MOMENTUM_PER_MB = 0.9
 
 # E2E config
-__C.CNTK.E2E_MAX_EPOCHS = 20
+__C.CNTK.E2E_MAX_EPOCHS = 30
 __C.CNTK.E2E_LR_PER_SAMPLE = [0.001] * 10 + [0.0001] * 10 + [0.00001]
 
 # 4-stage config (alternating training scheme)
@@ -84,12 +84,13 @@ __C.CNTK.TRAIN_MAP_FILE = "train_img_file.txt"
 __C.CNTK.TEST_MAP_FILE = "test_img_file.txt"
 __C.CNTK.TRAIN_ROI_FILE = "train_roi_file.txt"
 __C.CNTK.TEST_ROI_FILE = "test_roi_file.txt"
+__C.CNTK.CONFUSION_FILE = "class_confusions.txt"
 
 if __C.CNTK.DATASET == "HotailorPOC2": #name of your dataset. Must match the name set with property '__C.CNTK.DATASET'
     __C.CNTK.MAP_FILE_PATH = "../../DataSets/HotailorPOC2"
     __C.CNTK.NUM_TRAIN_IMAGES = 82 # number of images in 'positive' folder
     __C.CNTK.NUM_TEST_IMAGES = 20 # number of images in 'testImages' folder
-    __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 16\n'scales':\n - 4 \n - 8 \n - 12"
+    __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 32\n'scales':\n - 4 \n - 8 \n - 12"
 elif __C.CNTK.DATASET == "NewDataSetHotailorPOC2Mix": #name of your dataset. Must match the name set with property '__C.CNTK.DATASET'
     __C.CNTK.MAP_FILE_PATH = "../../DataSets/NewDataSetHotailorPOC2Mix"
     __C.CNTK.NUM_TRAIN_IMAGES = 149 # number of images in 'positive' folder
@@ -113,6 +114,7 @@ if __C.CNTK.BASE_MODEL == "AlexNet":
     __C.CNTK.E2E_LR_FACTOR = 1.0
     __C.CNTK.RPN_LR_FACTOR = 1.0
     __C.CNTK.FRCN_LR_FACTOR = 1.0
+    __C.CNTK.FEA_MAP_DIM = 4096
 
 if __C.CNTK.BASE_MODEL == "VGG16":
     __C.CNTK.BASE_MODEL_FILE = "VGG16.model"
@@ -126,7 +128,22 @@ if __C.CNTK.BASE_MODEL == "VGG16":
     __C.CNTK.E2E_LR_FACTOR = 1.0
     __C.CNTK.RPN_LR_FACTOR = 1.0
     __C.CNTK.FRCN_LR_FACTOR = 1.0
-
+    __C.CNTK.FEA_MAP_DIM = 4096
+    
+if __C.CNTK.BASE_MODEL == "ResNet_18":
+    __C.CNTK.BASE_MODEL_FILE = "ResNet_18.model"
+    __C.CNTK.FEATURE_NODE_NAME = "features"
+    __C.CNTK.LAST_CONV_NODE_NAME = "z.x.x.p"
+    __C.CNTK.START_TRAIN_CONV_NODE_NAME = "features" # __C.CNTK.FEATURE_NODE_NAME
+    __C.CNTK.POOL_NODE_NAME = "z.x.x.r"
+    __C.CNTK.LAST_HIDDEN_NODE_NAME = "z"
+    __C.CNTK.RPN_NUM_CHANNELS = 512
+    __C.CNTK.ROI_DIM = 7
+    __C.CNTK.E2E_LR_FACTOR = 1.0
+    __C.CNTK.RPN_LR_FACTOR = 1.0
+    __C.CNTK.FRCN_LR_FACTOR = 1.0
+    __C.CNTK.FEA_MAP_DIM = 1000
+    
 #
 # Training options
 #
