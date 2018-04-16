@@ -91,10 +91,11 @@ if __C.CNTK.DATASET == "HotailorPOC2": #name of your dataset. Must match the nam
     __C.CNTK.NUM_TRAIN_IMAGES = 82 # number of images in 'positive' folder
     __C.CNTK.NUM_TEST_IMAGES = 20 # number of images in 'testImages' folder
     __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 16\n'scales':\n - 4 \n - 8 \n - 12"
-elif __C.CNTK.DATASET == "NewDataSetHotailorPOC2Mix": #name of your dataset. Must match the name set with property '__C.CNTK.DATASET'
-    __C.CNTK.MAP_FILE_PATH = "../../DataSets/NewDataSetHotailorPOC2Mix"
-    __C.CNTK.NUM_TRAIN_IMAGES = 149 # number of images in 'positive' folder
-    __C.CNTK.NUM_TEST_IMAGES = 22 # number of images in 'testImages' folder
+
+if __C.CNTK.DATASET == "CNTK_RR_Rooms":
+    __C.CNTK.MAP_FILE_PATH = "../../DataSets/CNTK_RR_Rooms"
+    __C.CNTK.NUM_TRAIN_IMAGES = 422
+    __C.CNTK.NUM_TEST_IMAGES = 148
     __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 16\n'scales':\n - 4 \n - 8 \n - 12"
 
     

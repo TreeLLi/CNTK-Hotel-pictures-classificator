@@ -31,9 +31,9 @@ if __name__ == '__main__':
 
     #downloads hotel pictures classificator dataset (HotailorPOC2)
     #comment out lines bellow if you're using a custom dataset
-    sys.path.append(os.path.join(base_folder, "..", "..",  "DataSets", "HotailorPOC2"))
-    from download_HotailorPOC2_dataset import download_dataset
-    download_dataset()
+    # sys.path.append(os.path.join(base_folder, "..", "..",  "DataSets", "HotailorPOC2"))
+    # from download_HotailorPOC2_dataset import download_dataset
+    # download_dataset()
 
     ##generates metadata for dataset required by FasterRCNN.py script
     print("Creating mapping files for data set..")
