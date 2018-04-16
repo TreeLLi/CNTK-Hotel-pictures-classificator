@@ -210,6 +210,8 @@ DataSets/HotailorPOC2/testImages
 DataSets/HotailorPOC2/*.txt
 Detection/FasterRCNN/eval.py
 
+DataSets/CNTK_RR_Rooms/*
+
 # models
 *.model
 
