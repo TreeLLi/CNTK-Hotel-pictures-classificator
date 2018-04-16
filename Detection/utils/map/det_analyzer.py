@@ -56,7 +56,6 @@ def _load_confusions_file():
     with open(conf_file_path, 'r') as conf_file:
         lines = conf_file.read().splitlines()
         for line in lines:
-            print (line)
             sim_cls = line.split(":")
             for cls in sim_cls:
                 if cls in classes:
