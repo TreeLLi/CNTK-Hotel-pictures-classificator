@@ -5,7 +5,7 @@
 # ==============================================================================
 
 import numpy as np
-from nms import nms
+from utils.nms.nms import nms
 
 try:
     from config import cfg
