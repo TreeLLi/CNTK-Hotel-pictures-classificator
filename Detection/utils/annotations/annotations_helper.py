@@ -59,7 +59,11 @@ def _load_annotation(imgPath, class_dict):
         lines = f.readlines()
     labels = [_removeLineEndCharacters(s) for s in lines]
 
-    label_idxs = np.asarray([class_dict[l.decode('utf-8')] for l in labels])
+    label_idxs = None
+    try:
+        label_idxs = np.asarray([class_dict[l.decode('utf-8')] for l in labels])
+    except:
+        print (imgPath)
     label_idxs.shape = label_idxs.shape + (1,)
     annotations = np.hstack((bboxes, label_idxs))
 

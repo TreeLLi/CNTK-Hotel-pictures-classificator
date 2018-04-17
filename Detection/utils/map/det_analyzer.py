@@ -9,7 +9,7 @@ sys.path.append(os.path.join(curr_path, "../.."))
 from utils.annotations.annotations_helper import parse_class_map_file
 
 #dataset_path = os.path.join(curr_path, "../"+cfg["CNTK"].MAP_FILE_PATH)
-dataset_path = os.path.join(curr_path, "../../../DataSets/HotailorPOC2")
+dataset_path = os.path.join(curr_path, "../../../DataSets/CNTK_RR_Rooms")
 eva_path = os.path.join(curr_path, "../../FasterRCNN/Output/evaluations.txt")
 eva_file = open(eva_path, 'w+')
 eva_file.close()

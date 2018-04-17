@@ -27,7 +27,7 @@ __C.CNTK.FORCE_DETERMINISTIC = True
 __C.CNTK.FAST_MODE = False
 
 # set it to your custom dataset name
-__C.CNTK.DATASET = "HotailorPOC2"
+__C.CNTK.DATASET = "CNTK_RR_Rooms"
 __C.CNTK.BASE_MODEL = "VGG16" # "VGG16" or "AlexNet" or "VGG19"
 __C.CNTK.CONV_BIAS_INIT = 0.0
 __C.CNTK.SIGMA_RPN_L1 = 3.0
@@ -94,8 +94,8 @@ if __C.CNTK.DATASET == "HotailorPOC2": #name of your dataset. Must match the nam
 
 if __C.CNTK.DATASET == "CNTK_RR_Rooms":
     __C.CNTK.MAP_FILE_PATH = "../../DataSets/CNTK_RR_Rooms"
-    __C.CNTK.NUM_TRAIN_IMAGES = 422
-    __C.CNTK.NUM_TEST_IMAGES = 148
+    __C.CNTK.NUM_TRAIN_IMAGES = 424
+    __C.CNTK.NUM_TEST_IMAGES = 146
     __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 16\n'scales':\n - 4 \n - 8 \n - 12"
 
     
