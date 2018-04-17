@@ -2,14 +2,19 @@
 import os, sys
 import numpy as np
 
+try:
+    from config import cfg
+except ImportError:
+    from utils.default_config import cfg
+
 curr_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(curr_path, "../.."))
 
 #from FasterRCNN.config import cfg
 from utils.annotations.annotations_helper import parse_class_map_file
 
-#dataset_path = os.path.join(curr_path, "../"+cfg["CNTK"].MAP_FILE_PATH)
-dataset_path = os.path.join(curr_path, "../../../DataSets/HotailorPOC2")
+dataset_path = os.path.join(curr_path, "../"+cfg["CNTK"].MAP_FILE_PATH)
+#dataset_path = os.path.join(curr_path, "../../../DataSets/HotailorPOC2")
 eva_path = os.path.join(curr_path, "../../FasterRCNN/Output/evaluations.txt")
 eva_file = open(eva_path, 'w+')
 eva_file.close()
@@ -21,7 +26,7 @@ def log_fp_errors(className, fp_errors):
         eva_file.write(className + ":\n")
         total = np.sum(fp_errors)
         total_tp = fp_errors[-1]
-        fp_errors = fp_errors[:-2]
+        fp_errors = fp_errors[:-1]
         total_fp = np.sum(fp_errors)
         eva_file.write("total: {:d}, tp: {:d}({:.2f}), fp: {:d}({:.2f})\n".format(total, total_tp, total_tp/float(total), total_fp, total_fp/float(total)))
         ratios = fp_errors / total_fp
