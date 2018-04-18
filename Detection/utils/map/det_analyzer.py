@@ -17,8 +17,8 @@ from utils.annotations.annotations_helper import parse_class_map_file
 fp_errors_infos = ["Localization", "Similiar", "Others", "Background", "Duplicated"]
 
 def log_fp_errors(fp_errors, output_file):
-    for className, fp_error in fp_errors:
-        with open(output_file, 'w+') as output:
+    with open(output_file, 'w+') as output:
+        for className, fp_error in fp_errors.items():
             output.write(className + ":\n")
             total = np.sum(fp_error)
             total_tp = fp_error[-1]
@@ -29,7 +29,7 @@ def log_fp_errors(fp_errors, output_file):
             output.write("total: {:d}, tp: {:d}({:.2f}), fp: {:d}({:.2f})\n".format(total, total_tp,tp_ratio, total_fp, fp_ratio))
             ratios = fp_error / total_fp
             for idx, amount in enumerate(fp_error):
-                info = fp_error_infos[idx]
+                info = fp_errors_infos[idx]
                 ratio = ratios[idx]
                 line = "{:>15}: {:d}({:.2f})\n".format(info, amount, ratio)
                 output.write(line)
@@ -44,9 +44,11 @@ def log_fp_errors(fp_errors, output_file):
 #     return sim_cls, otr_cls
 
 def confusions_map(classes, conf_file):
+    classes = list(classes)
+    del classes[0]
     conf = _load_confusions_file(classes, conf_file)
-
-    for cls, cf in conf.items():
+    
+    for class_name, cf in conf.items():
         sim_cls = cf[0]
         otr_cls = [cls for idx, cls in enumerate(classes) if ((cls not in sim_cls) and cls!=class_name)]
         cf.append(otr_cls)

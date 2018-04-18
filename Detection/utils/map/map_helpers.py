@@ -42,8 +42,11 @@ def evaluate_detections(all_boxes, all_gt_infos, classes, use_07_metric=False, a
         if className != '__background__':
             rec, prec, ap, fp_error = _evaluate_detections(classIndex, className, nms_dets, all_gt_infos, use_07_metric=use_07_metric, confusions=confusions)
             aps[className] = ap
-            fp_errors[className] = fp_error
-    return aps
+            if fp_error is not None and fp_errors is not None:
+                fp_errors[className] = fp_error
+            else:
+                fp_errors = None
+    return aps, fp_errors
 
 def _evaluate_detections(classIndex, className, all_boxes, all_gt_infos, overlapThreshold=0.5, use_07_metric=False, confusions=None):
     '''
@@ -140,7 +143,9 @@ def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids
     fp_error = None
     if confusions:
         fp_error = np.zeros(6).astype(int)
-        sim_classes, otr_classes = confusions(className)
+        conf = confusions[className]
+        sim_classes = conf[0]
+        otr_classes = conf[1]
     
     for d in range(nd):
         # ground-truth boxes for particular image
@@ -154,17 +159,17 @@ def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids
                 if not R['det'][jmax]:
                     tp[d] = 1.
                     R['det'][jmax] = 1
-                    if fp_error:
+                    if fp_error is not None:
                         fp_error[5] += 1
                 else:
                     # duplicate detection on the detected gt
                     fp[d] = 1.
-                    if fp_error:
+                    if fp_error is not None:
                         fp_error[4] += 1
         else:
             fp[d] = 1.
 
-            if fp_error:
+            if fp_error is not None:
                 # localization error
                 if ovmax >= 0.1:
                     fp_error[0] += 1
