@@ -7,7 +7,7 @@
 
 import numpy as np
 
-def nms(dets, thresh):
+def nms(dets, ovr_thresh, soft=False, conf_thresh=0.0):
     x1 = dets[:, 0]
     y1 = dets[:, 1]
     x2 = dets[:, 2]
@@ -31,7 +31,18 @@ def nms(dets, thresh):
         inter = w * h
         ovr = inter / (areas[i] + areas[order[1:]] - inter)
 
-        inds = np.where(ovr <= thresh)[0]
-        order = order[inds + 1]
+        if soft:
+            inds = np.where(ovr > ovr_thresh)[0]
+            reduc = order[inds+1]
+            ovrs = ovr[inds]
+            scores[reduc] = scores[reduc] * (1-ovrs)
+            order = scores.argsort()[::-1]
+            del order[np.where(order==i)[0]]
+            if scores[order[0]] < conf_thresh:
+                break
+            
+        else:
+            inds = np.where(ovr <= ovr_thresh)[0]
+            order = order[inds + 1]
 
 return keep

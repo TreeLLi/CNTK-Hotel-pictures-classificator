@@ -14,7 +14,7 @@ except ImportError:
 
 import pdb
 
-def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5, conf_threshold=0.0):
+def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5, conf_threshold=0.0, soft, soft=False):
     '''
     Applies nms to the results for a single image.
 
@@ -39,7 +39,7 @@ def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5,
         allIndices.append(indices)
 
     # call nms
-    _, nmsKeepIndicesList = apply_nms_to_test_set_results(nmsRects, nms_threshold, conf_threshold)
+    _, nmsKeepIndicesList = apply_nms_to_test_set_results(nmsRects, nms_threshold, conf_threshold, soft)
 
     # map back to original roi indices
     nmsKeepIndices = []
@@ -49,7 +49,7 @@ def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5,
     assert (len(nmsKeepIndices) == len(set(nmsKeepIndices))) # check if no roi indices was added >1 times
     return nmsKeepIndices
 
-def apply_nms_to_test_set_results(all_boxes, nms_threshold, conf_threshold):
+def apply_nms_to_test_set_results(all_boxes, nms_threshold, conf_threshold, soft=False):
     '''
     Applies nms to the results of multiple images.
 
@@ -74,7 +74,7 @@ def apply_nms_to_test_set_results(all_boxes, nms_threshold, conf_threshold):
             dets = all_boxes[cls_ind][im_ind]
             if dets == []:
                 continue
-            keep = nms(dets.astype(np.float32), nms_threshold)
+            keep = nms(dets.astype(np.float32), nms_threshold, soft, conf_threshold)
 
             # also filter out low confidences
             if conf_threshold > 0:
