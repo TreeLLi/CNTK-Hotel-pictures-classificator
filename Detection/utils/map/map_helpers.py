@@ -8,10 +8,8 @@ import os
 import numpy as np
 
 from utils.nms.nms_wrapper import apply_nms_to_test_set_results
-from utils.map.det_analyzer import confusion_classes, log_fp_errors
 
-
-def evaluate_detections(all_boxes, all_gt_infos, classes, use_07_metric=False, apply_mms=True, nms_threshold=0.5, conf_threshold=0.0):
+def evaluate_detections(all_boxes, all_gt_infos, classes, use_07_metric=False, apply_mms=True, nms_threshold=0.5, conf_threshold=0.0, soft=False, confusions=None):
     '''
     Computes per-class average precision.
 
@@ -32,23 +30,25 @@ def evaluate_detections(all_boxes, all_gt_infos, classes, use_07_metric=False, a
 
     if apply_mms:
         print ("Number of rois before non-maximum suppression: %d" % sum([len(all_boxes[i][j]) for i in range(len(all_boxes)) for j in range(len(all_boxes[0]))]))
-        nms_dets,_ = apply_nms_to_test_set_results(all_boxes, nms_threshold, conf_threshold)
+        nms_dets,_ = apply_nms_to_test_set_results(all_boxes, nms_threshold, conf_threshold, soft)
         print ("Number of rois  after non-maximum suppression: %d" % sum([len(nms_dets[i][j]) for i in range(len(all_boxes)) for j in range(len(all_boxes[0]))]))
     else:
         print ("Skipping non-maximum suppression")
         nms_dets = all_boxes
 
     aps = {}
+    fp_errors = {}
     for classIndex, className in enumerate(classes):
         if className != '__background__':
-            other_gts = dict(all_gt_infos)
-            del other_gts[className]
-            rec, prec, ap = _evaluate_detections(classIndex, className, nms_dets, all_gt_infos, use_07_metric=use_07_metric)
+            rec, prec, ap, fp_error = _evaluate_detections(classIndex, className, nms_dets, all_gt_infos, use_07_metric=use_07_metric, confusions=confusions)
             aps[className] = ap
+            if fp_error is not None and fp_errors is not None:
+                fp_errors[className] = fp_error
+            else:
+                fp_errors = None
+    return aps, fp_errors
 
-    return aps
-
-def _evaluate_detections(classIndex, className, all_boxes, all_gt_infos, overlapThreshold=0.5, use_07_metric=False):
+def _evaluate_detections(classIndex, className, all_boxes, all_gt_infos, overlapThreshold=0.5, use_07_metric=False, confusions=None):
     '''
     Top level function that does the PASCAL VOC evaluation.
     '''
@@ -72,15 +72,16 @@ def _evaluate_detections(classIndex, className, all_boxes, all_gt_infos, overlap
     detConfidences = np.array(detConfidences)
 
     # compute precision / recall / ap
-    rec, prec, ap = _voc_computePrecisionRecallAp(
+    rec, prec, ap, fp_error = _voc_computePrecisionRecallAp(
         className,
         all_gt_infos=all_gt_infos,
         confidence=detConfidences,
         image_ids=detImgIndices,
         BB=detBboxes,
         ovthresh=overlapThreshold,
-        use_07_metric=use_07_metric)
-    return rec, prec, ap
+        use_07_metric=use_07_metric,
+        confusions=confusions)
+    return rec, prec, ap, fp_error
 
 def computeAveragePrecision(recalls, precisions, use_07_metric=False):
     '''
@@ -113,7 +114,7 @@ def computeAveragePrecision(recalls, precisions, use_07_metric=False):
         ap = np.sum((mrecalls[i + 1] - mrecalls[i]) * mprecisions[i + 1])
     return ap
 
-def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids, BB, ovthresh=0.5, use_07_metric=False):
+def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids, BB, ovthresh=0.5, use_07_metric=False, confusions=None):
     '''
     Computes precision, recall. and average precision
 
@@ -139,8 +140,12 @@ def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids
     # 0:localization error, 1:confusion with similiar objects
     # 2:confusion with other objects, 3:confusion with background
     # 4:duplicated detection 5:true-positive
-    fp_errors = np.zeros(6).astype(int)
-    sim_classes, otr_classes = confusion_classes(className)
+    fp_error = None
+    if confusions:
+        fp_error = np.zeros(6).astype(int)
+        conf = confusions[className]
+        sim_classes = conf[0]
+        otr_classes = conf[1]
     
     for d in range(nd):
         # ground-truth boxes for particular image
@@ -154,31 +159,32 @@ def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids
                 if not R['det'][jmax]:
                     tp[d] = 1.
                     R['det'][jmax] = 1
-                    fp_errors[5] += 1
+                    if fp_error is not None:
+                        fp_error[5] += 1
                 else:
                     # duplicate detection on the detected gt
                     fp[d] = 1.
-                    fp_errors[4] += 1
+                    if fp_error is not None:
+                        fp_error[4] += 1
         else:
             fp[d] = 1.
 
-            # localization error
-            if ovmax >= 0.1:
-                fp_errors[0] += 1
-            else:
-                # confuse with objects
-                sim_ovmax_cls, sim_ovmax = max_overlap_with_classes(list(sim_classes), image_ids[d], all_gt_infos, bb)
-                otr_ovmax_cls, otr_ovmax = max_overlap_with_classes(list(otr_classes), image_ids[d], all_gt_infos, bb)
-
-                if sim_ovmax>=otr_ovmax and sim_ovmax>0.1:
-                    fp_errors[1] += 1
-                elif otr_ovmax>=sim_ovmax and otr_ovmax>0.1:
-                    fp_errors[2] += 1
+            if fp_error is not None:
+                # localization error
+                if ovmax >= 0.1:
+                    fp_error[0] += 1
                 else:
-                    # confusion with background
-                    fp_errors[3] += 1
-
-    log_fp_errors(className, fp_errors)
+                    # confuse with objects
+                    sim_ovmax_cls, sim_ovmax = max_overlap_with_classes(list(sim_classes), image_ids[d], all_gt_infos, bb)
+                    otr_ovmax_cls, otr_ovmax = max_overlap_with_classes(list(otr_classes), image_ids[d], all_gt_infos, bb)
+                    
+                    if sim_ovmax>=otr_ovmax and sim_ovmax>0.1:
+                        fp_error[1] += 1
+                    elif otr_ovmax>=sim_ovmax and otr_ovmax>0.1:
+                        fp_error[2] += 1
+                    else:
+                        # confusion with background
+                        fp_error[3] += 1
                     
     # compute precision recall
     npos = sum([len(cr['bbox']) for cr in all_gt_infos[className]])
@@ -188,7 +194,7 @@ def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids
     # avoid divide by zero in case the first detection matches a difficult ground truth
     prec = tp / np.maximum(tp + fp, np.finfo(np.float64).eps)
     ap = computeAveragePrecision(rec, prec, use_07_metric)
-    return rec, prec, ap
+    return rec, prec, ap, fp_error
 
 def max_overlap_with_class(className, image_id, all_gt_infos, bb):
     # ground-truth boxes for particular image

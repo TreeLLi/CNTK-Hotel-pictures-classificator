@@ -10,7 +10,7 @@ import numpy as np
 import yaml
 from utils.rpn.generate_anchors import generate_anchors
 from utils.rpn.bbox_transform import bbox_transform_inv, clip_boxes
-from utils.nms.nms_wrapper import nms
+from utils.nms.nms import nms
 
 try:
     from config import cfg
@@ -160,7 +160,7 @@ class ProposalLayer(UserFunction):
         # 6. apply nms (e.g. threshold = 0.7)
         # 7. take after_nms_topN (e.g. 300)
         # 8. return the top proposals (-> RoIs top)
-        keep = nms(np.hstack((proposals, scores)), nms_thresh)
+        keep = nms(np.hstack((proposals, scores)), nms_thresh, soft=cfg[CNTK].RESULTS_NMS_SOFT)
         if post_nms_topN > 0:
             keep = keep[:post_nms_topN]
         proposals = proposals[keep, :]

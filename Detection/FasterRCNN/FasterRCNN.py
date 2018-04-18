@@ -30,6 +30,7 @@ sys.path.append(os.path.join(abs_path, ".."))
 from utils.rpn.rpn_helpers import create_rpn, create_proposal_target_layer
 from utils.rpn.cntk_smoothL1_loss import SmoothL1Loss
 from utils.map.map_helpers import evaluate_detections
+from utils.map.det_analyzer import confusions_map, log_fp_errors
 from utils.annotations.annotations_helper import parse_class_map_file
 from config import cfg
 from od_mb_source import ObjectDetectionMinibatchSource
@@ -686,10 +687,27 @@ def eval_faster_rcnn_mAP(eval_model):
         if (img_i+1) % 100 == 0:
             print("Processed {} samples".format(img_i+1))
 
+    confusions = None
+    try:
+        conf_file = cfg["CNTK"].CONFUSION_FILE
+        conf_file = os.path.join(map_file_path, conf_file)
+        confusions = confusions_map(classes, conf_file)
+        print (confusions)
+    except:
+        confusions = None
+
+    print (confusions)
     # calculate mAP
-    aps = evaluate_detections(all_boxes, all_gt_infos, classes,
-                              nms_threshold=cfg["CNTK"].RESULTS_NMS_THRESHOLD,
-                              conf_threshold = cfg["CNTK"].RESULTS_NMS_CONF_THRESHOLD)
+    aps, fp_errors = evaluate_detections(all_boxes, all_gt_infos, classes,
+                                         nms_threshold=cfg["CNTK"].RESULTS_NMS_THRESHOLD,
+                                         conf_threshold = cfg["CNTK"].RESULTS_NMS_CONF_THRESHOLD,
+                                         soft=cfg["CNTK"].RESULTS_NMS_SOFT
+                                         confusions=confusions)
+    if fp_errors:
+        output_file = os.path.join(globalvars['output_path'], "{}_{}_fps.txt"
+                              .format(cfg["CNTK"].BASE_MODEL, "e2e" if globalvars['train_e2e'] else "4stage"))
+        log_fp_errors(fp_errors, output_file)
+    
     ap_list = []
     for class_name in aps:
         ap_list += [aps[class_name]]
