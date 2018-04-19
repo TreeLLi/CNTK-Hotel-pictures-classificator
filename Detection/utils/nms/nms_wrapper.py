@@ -14,7 +14,7 @@ except ImportError:
 
 import pdb
 
-def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5, conf_threshold=0.0, soft, soft=False):
+def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5, conf_threshold=0.0, soft=False):
     '''
     Applies nms to the results for a single image.
 
