@@ -2,57 +2,54 @@
 import os, sys
 import numpy as np
 
-curr_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(curr_path, "../.."))
-
-#from FasterRCNN.config import cfg
-from utils.annotations.annotations_helper import parse_class_map_file
-
-#dataset_path = os.path.join(curr_path, "../"+cfg["CNTK"].MAP_FILE_PATH)
-dataset_path = os.path.join(curr_path, "../../../DataSets/CNTK_RR_Rooms")
-eva_path = os.path.join(curr_path, "../../FasterRCNN/Output/evaluations.txt")
-eva_file = open(eva_path, 'w+')
-eva_file.close()
-
 fp_errors_infos = ["Localization", "Similiar", "Others", "Background", "Duplicated"]
 
-def log_fp_errors(className, fp_errors):
-    with open(eva_path, 'a') as eva_file:
-        eva_file.write(className + ":\n")
-        total = np.sum(fp_errors)
-        total_tp = fp_errors[-1]
-        fp_errors = fp_errors[:-2]
-        total_fp = np.sum(fp_errors)
-        eva_file.write("total: {:d}, tp: {:d}({:.2f}), fp: {:d}({:.2f})\n".format(total, total_tp, total_tp/float(total), total_fp, total_fp/float(total)))
-        ratios = fp_errors / total_fp
-        for idx, amount in enumerate(fp_errors):
-            info = fp_errors_infos[idx]
-            ratio = ratios[idx]
-            line = "{:>15}: {:d}({:.2f})\n".format(info, amount, ratio)
-            eva_file.write(line)
+def log_fp_errors(fp_errors, output_file):
+    with open(output_file, 'w+') as output:
+        for className, fp_error in fp_errors.items():
+            output.write(className + ":\n")
+            total = np.sum(fp_error)
+            if total == 0:
+                continue
+            total_tp = fp_error[-1]
+            tp_ratio = total_tp / float(total)
+            fp_error = fp_error[:-1]
+            total_fp = np.sum(fp_error)
+            fp_ratio = total_fp / float(total)
+            output.write("total: {:d}, tp: {:d}({:.2f}), fp: {:d}({:.2f})\n".format(total, total_tp,tp_ratio, total_fp, fp_ratio))
+            if total_fp == 0:
+                ratios = np.zeros_like(fp_error)
+            else:
+                ratios = fp_error / total_fp
+            
+            for idx, amount in enumerate(fp_error):
+                info = fp_errors_infos[idx]
+                ratio = ratios[idx]
+                line = "{:>15}: {:d}({:.2f})\n".format(info, amount, ratio)
+                output.write(line)
 
-def confusion_classes(class_name):
-    confusions = _load_confusions_file()
+# def confusion_classes(class_name):
+#     confusions = _load_confusions_file()
 
-    sim_cls = confusions[class_name]
-    classes = _load_classes_file()
-    otr_cls = [cls for idx, cls in enumerate(classes) if ((cls not in sim_cls) and cls!=class_name)]
+#     sim_cls = confusions[class_name]
+#     classes = _load_classes_file()
+#     otr_cls = [cls for idx, cls in enumerate(classes) if ((cls not in sim_cls) and cls!=class_name)]
 
-    return sim_cls, otr_cls
+#     return sim_cls, otr_cls
 
-def _load_classes_file():
-    #classes_file_path = os.path.join(dataset_path, cfg["CNTK"].CLASS_MAP_FILE)
-    classes_file_path = os.path.join(dataset_path, "class_map.txt")
-    classes = parse_class_map_file(classes_file_path)
-    # remove the background class
+def confusions_map(classes, conf_file):
+    classes = list(classes)
     del classes[0]
-    return classes
+    conf = _load_confusions_file(classes, conf_file)
+    
+    for class_name, cf in conf.items():
+        sim_cls = cf[0]
+        otr_cls = [cls for idx, cls in enumerate(classes) if ((cls not in sim_cls) and cls!=class_name)]
+        cf.append(otr_cls)
+    return conf
 
-def _load_confusions_file():
-    classes = _load_classes_file()
-    confusions = {cls:set() for cls in classes}
-    conf_file_path = os.path.join(dataset_path, "class_confusions.txt")
-    #conf_file_path = os.path.join(dataset_path, cfg["CNTK"].CONFUSION_FILE)
+def _load_confusions_file(classes, conf_file_path):
+    confusions = {cls:[set()] for cls in classes}
     with open(conf_file_path, 'r') as conf_file:
         lines = conf_file.read().splitlines()
         for line in lines:
@@ -61,6 +58,6 @@ def _load_confusions_file():
                 if cls in classes:
                     for s_cls in sim_cls:
                         if s_cls!=cls:
-                            confusions[cls].add(s_cls)
+                            confusions[cls][0].add(s_cls)
 
     return confusions
