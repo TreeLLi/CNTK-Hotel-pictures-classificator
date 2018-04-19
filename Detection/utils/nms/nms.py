@@ -33,17 +33,20 @@ def nms(dets, ovr_thresh, soft=False, conf_thresh=0.0):
 
         if soft:
             inds = np.where(ovr > ovr_thresh)[0]
+            print (order)
+            print (inds+1)
             reduc = order[inds+1]
             ovrs = ovr[inds]
+            print (scores)
             scores[reduc] = scores[reduc] * (1-ovrs)
-            order = np.asarray(scores.argsort()[::-1])
-            idx = np.where(order==i)[0][0]
-            order = order.tolist()
-            del order[idx]
-            order = np.asarray(order)
+            print (scores)
+            order = scores.argsort()[::-1]
+            idx = np.where(order!=i)[0]
+            order = order[idx]
+            print (order)
             
-            if scores[order[0]] < conf_thresh:
-                break
+            if scores[order[0]] < 0.5:
+                return keep
             
         else:
             inds = np.where(ovr <= ovr_thresh)[0]
