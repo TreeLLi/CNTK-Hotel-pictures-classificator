@@ -44,7 +44,7 @@ def nms(dets, ovr_thresh, soft=False, conf_thresh=0.0):
             order = order[[idx for idx, val in enumerate(order) if val not in keep]]
             # print (order)
             
-            if scores[order[0]] < 0.5:
+            if order.size!=0 and scores[order[0]]<conf_thresh:
                 break
             
         else:
