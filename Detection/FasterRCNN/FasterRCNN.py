@@ -692,7 +692,6 @@ def eval_faster_rcnn_mAP(eval_model):
         conf_file = cfg["CNTK"].CONFUSION_FILE
         conf_file = os.path.join(map_file_path, conf_file)
         confusions = confusions_map(classes, conf_file)
-        print (confusions)
     except:
         confusions = None
 
