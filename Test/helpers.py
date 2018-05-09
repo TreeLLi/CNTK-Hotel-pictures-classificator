@@ -1,9 +1,15 @@
 import unittest
-import os
+import os, sys
+
+abs_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(abs_path, ".."))
 
 from DataSets.HotailorPOC2.download_HotailorPOC2_dataset import download_dataset
 from PretrainedModels.models_util import download_model, download_model_by_name
 
+sys.path.append(os.path.join(abs_path, "../Detection/FasterRCNN"))
+
+import FasterRCNN
 
 class TestDownload(unittest.TestCase):
 
