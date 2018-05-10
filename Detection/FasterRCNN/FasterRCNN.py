@@ -1,5 +1,4 @@
 # Copyright (c) Microsoft. All rights reserved.
-
 # Licensed under the MIT license. See LICENSE.md file in the project root
 # for full license information.
 # ==============================================================================
@@ -695,7 +694,6 @@ def eval_faster_rcnn_mAP(eval_model):
     except:
         confusions = None
 
-    print (confusions)
     # calculate mAP
     aps, fp_errors = evaluate_detections(all_boxes, all_gt_infos, classes,
                               nms_threshold=cfg["CNTK"].RESULTS_NMS_THRESHOLD,
