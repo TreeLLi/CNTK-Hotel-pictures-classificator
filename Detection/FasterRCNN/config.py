@@ -94,8 +94,8 @@ if __C.CNTK.DATASET == "HotailorPOC2": #name of your dataset. Must match the nam
 
 if __C.CNTK.DATASET == "CNTK_RR_Rooms":
     __C.CNTK.MAP_FILE_PATH = "../../DataSets/CNTK_RR_Rooms"
-    __C.CNTK.NUM_TRAIN_IMAGES = 417
-    __C.CNTK.NUM_TEST_IMAGES = 151
+    __C.CNTK.NUM_TRAIN_IMAGES = 418
+    __C.CNTK.NUM_TEST_IMAGES = 98
     __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 16\n'scales':\n - 4 \n - 8 \n - 12"
 
     
