@@ -28,7 +28,7 @@ __C.CNTK.FAST_MODE = False
 
 # set it to your custom dataset name
 __C.CNTK.DATASET = "HotailorPOC2"
-__C.CNTK.BASE_MODEL = "VGG16" # "VGG16" or "AlexNet" or "VGG19"
+__C.CNTK.BASE_MODEL = "AlexNet" # "VGG16" or "AlexNet" or "VGG19"
 __C.CNTK.CONV_BIAS_INIT = 0.0
 __C.CNTK.SIGMA_RPN_L1 = 3.0
 __C.CNTK.SIGMA_DET_L1 = 1.0
@@ -39,13 +39,13 @@ __C.CNTK.L2_REG_WEIGHT = 0.0005
 __C.CNTK.MOMENTUM_PER_MB = 0.9
 
 # E2E config
-__C.CNTK.E2E_MAX_EPOCHS = 30
+__C.CNTK.E2E_MAX_EPOCHS = 1
 __C.CNTK.E2E_LR_PER_SAMPLE = [0.001] * 10 + [0.0001] * 10 + [0.00001]
 
 # 4-stage config (alternating training scheme)
-__C.CNTK.RPN_EPOCHS = 16
+__C.CNTK.RPN_EPOCHS = 1
 __C.CNTK.RPN_LR_PER_SAMPLE = [0.001] * 12 + [0.0001] * 4
-__C.CNTK.FRCN_EPOCHS = 8
+__C.CNTK.FRCN_EPOCHS = 1
 __C.CNTK.FRCN_LR_PER_SAMPLE = [0.001] * 6 + [0.0001] * 2
 
 # number of maximum number of ROI per image
@@ -88,8 +88,8 @@ __C.CNTK.CONFUSION_FILE = "class_confusions.txt"
 
 if __C.CNTK.DATASET == "HotailorPOC2": #name of your dataset. Must match the name set with property '__C.CNTK.DATASET'
     __C.CNTK.MAP_FILE_PATH = "../../DataSets/HotailorPOC2"
-    __C.CNTK.NUM_TRAIN_IMAGES = 82 # number of images in 'positive' folder
-    __C.CNTK.NUM_TEST_IMAGES = 20 # number of images in 'testImages' folder
+    __C.CNTK.NUM_TRAIN_IMAGES = 1 # number of images in 'positive' folder
+    __C.CNTK.NUM_TEST_IMAGES = 1 # number of images in 'testImages' folder
     __C.CNTK.PROPOSAL_LAYER_PARAMS = "'feat_stride': 16\n'scales':\n - 4 \n - 8 \n - 12"
 
 if __C.CNTK.DATASET == "CNTK_RR_Rooms":

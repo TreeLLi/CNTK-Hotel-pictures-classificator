@@ -1,5 +1,5 @@
 import unittest
-import os, sys
+import os, sys, gc
 
 abs_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(abs_path, ".."))
@@ -37,11 +37,15 @@ class Train(unittest.TestCase):
     def test_e2e(self):
         from FasterRCNN import train_faster_rcnn_e2e
 
+        gc.collect()
+        
         eval = train_faster_rcnn_e2e(model_path, True)
 
     def test_alternating(self):
         from FasterRCNN import train_faster_rcnn_alternating
 
+        gc.collect()
+        
         eval = train_faster_rcnn_alternating(model_path, True)
 
 class Evaluation(unittest.TestCase):
@@ -49,6 +53,8 @@ class Evaluation(unittest.TestCase):
     def test_evaluate(self):
         from FasterRCNN import train_faster_rcnn_e2e, eval_faster_rcnn_mAP
 
+        gc.collect()
+        
         eval = train_faster_rcnn_e2e(model_path, True)
         eval_faster_rcnn_mAP(eval)
         
