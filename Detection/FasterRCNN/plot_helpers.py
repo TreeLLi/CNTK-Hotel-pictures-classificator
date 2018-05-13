@@ -328,7 +328,7 @@ def getColorsPalette():
     colors = [[255,0,0], [0,255,0], [0,0,255], [255,255,0], [255,0,255]]
     for i in range(5):
         for dim in range(0,3):
-            for s in (0.25, 0.5, 0.75):
+            for s in (0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9):
                 if colors[i][dim] != 0:
                     newColor = copy.deepcopy(colors[i])
                     newColor[dim] = int(round(newColor[dim] * s))

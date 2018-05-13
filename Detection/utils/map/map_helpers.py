@@ -1,5 +1,4 @@
 # Copyright (c) Microsoft. All rights reserved.
-
 # Licensed under the MIT license. See LICENSE.md file in the project root
 # for full license information.
 # ==============================================================================
@@ -42,11 +41,13 @@ def evaluate_detections(all_boxes, all_gt_infos, classes, use_07_metric=False, a
         if className != '__background__':
             rec, prec, ap, fp_error = _evaluate_detections(classIndex, className, nms_dets, all_gt_infos, use_07_metric=use_07_metric, confusions=confusions)
             aps[className] = ap
-            if fp_error is not None and fp_errors is not None:
+            if fp_error is not None:
                 fp_errors[className] = fp_error
-            else:
-                fp_errors = None
-    return aps, fp_errors
+
+    if len(fp_errors) > 0:
+        return aps, fp_errors
+    else:
+        return aps, None
 
 def _evaluate_detections(classIndex, className, all_boxes, all_gt_infos, overlapThreshold=0.5, use_07_metric=False, confusions=None):
     '''
@@ -123,7 +124,7 @@ def _voc_computePrecisionRecallAp(className, all_gt_infos, confidence, image_ids
          BB: detection roi info
     '''
     if len(BB) == 0:
-        return 0.0, 0.0, 0.0
+        return 0.0, 0.0, 0.0, None
 
     # sort by confidence
     sorted_ind = np.argsort(-confidence)
