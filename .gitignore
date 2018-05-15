@@ -210,7 +210,10 @@ DataSets/HotailorPOC2/testImages
 DataSets/HotailorPOC2/*.txt
 Detection/FasterRCNN/eval.py
 
-DataSets/CNTK_RR_Rooms/*
+DataSets/CNTK_RR_Rooms/negative
+DataSets/CNTK_RR_Rooms/positive
+DataSets/CNTK_RR_Rooms/testImages
+DataSets/CNTK_RR_Rooms/*.txt
 
 # models
 *.model
