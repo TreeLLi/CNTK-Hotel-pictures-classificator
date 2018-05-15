@@ -5,12 +5,7 @@
 # ==============================================================================
 
 import numpy as np
-from utils.cython_modules.cpu_nms import cpu_nms
-try:
-    from utils.cython_modules.gpu_nms import gpu_nms
-    gpu_nms_available = True
-except ImportError:
-    gpu_nms_available = False
+from utils.nms.nms import nms
 
 try:
     from config import cfg
@@ -19,18 +14,7 @@ except ImportError:
 
 import pdb
 
-def nms(dets, thresh, force_cpu=False):
-    '''
-    Dispatches the call to either CPU or GPU NMS implementations
-    '''
-    if dets.shape[0] == 0:
-        return []
-    if gpu_nms_available and cfg.USE_GPU_NMS and not force_cpu:
-        return gpu_nms(dets, thresh, device_id=cfg.GPU_ID)
-    else:
-        return cpu_nms(dets, thresh)
-
-def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5, conf_threshold=0.0):
+def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5, conf_threshold=0.7, soft=False):
     '''
     Applies nms to the results for a single image.
 
@@ -55,7 +39,7 @@ def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5,
         allIndices.append(indices)
 
     # call nms
-    _, nmsKeepIndicesList = apply_nms_to_test_set_results(nmsRects, nms_threshold, conf_threshold)
+    _, nmsKeepIndicesList = apply_nms_to_test_set_results(nmsRects, nms_threshold, conf_threshold, soft)
 
     # map back to original roi indices
     nmsKeepIndices = []
@@ -65,7 +49,7 @@ def apply_nms_to_single_image_results(coords, labels, scores, nms_threshold=0.5,
     assert (len(nmsKeepIndices) == len(set(nmsKeepIndices))) # check if no roi indices was added >1 times
     return nmsKeepIndices
 
-def apply_nms_to_test_set_results(all_boxes, nms_threshold, conf_threshold):
+def apply_nms_to_test_set_results(all_boxes, nms_threshold, conf_threshold, soft=False):
     '''
     Applies nms to the results of multiple images.
 
@@ -90,7 +74,7 @@ def apply_nms_to_test_set_results(all_boxes, nms_threshold, conf_threshold):
             dets = all_boxes[cls_ind][im_ind]
             if dets == []:
                 continue
-            keep = nms(dets.astype(np.float32), nms_threshold)
+            keep = nms(dets.astype(np.float32), nms_threshold, soft, conf_threshold)
 
             # also filter out low confidences
             if conf_threshold > 0:

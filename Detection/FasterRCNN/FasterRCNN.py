@@ -696,8 +696,10 @@ def eval_faster_rcnn_mAP(eval_model):
 
     # calculate mAP
     aps, fp_errors = evaluate_detections(all_boxes, all_gt_infos, classes,
-                              nms_threshold=cfg["CNTK"].RESULTS_NMS_THRESHOLD,
-                              conf_threshold = cfg["CNTK"].RESULTS_NMS_CONF_THRESHOLD, confusions=confusions)
+                                         nms_threshold=cfg["CNTK"].RESULTS_NMS_THRESHOLD,
+                                         conf_threshold = cfg["CNTK"].RESULTS_NMS_CONF_THRESHOLD,
+                                         soft=cfg["CNTK"].RESULTS_NMS_SOFT,
+                                         confusions=confusions)
     if fp_errors:
         output_file = os.path.join(globalvars['output_path'], "{}_{}_fps.txt"
                               .format(cfg["CNTK"].BASE_MODEL, "e2e" if globalvars['train_e2e'] else "4stage"))
