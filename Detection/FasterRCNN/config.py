@@ -62,7 +62,7 @@ __C.CNTK.NUM_CHANNELS = 3
 __C.CNTK.RESULTS_NMS_THRESHOLD = 0.3 # see also: __C.TEST.NMS = 0.3
 __C.CNTK.RESULTS_NMS_CONF_THRESHOLD = 0.5
 __C.CNTK.RESULTS_BGR_PLOT_THRESHOLD = 0.1
-__C.CNTK.RESULTS_NMS_SOFT = True
+__C.CNTK.RESULTS_NMS_SOFT = False
 
 __C.CNTK.GRAPH_TYPE = "png" # "png" or "pdf"
 __C.CNTK.DEBUG_OUTPUT = True
@@ -74,11 +74,9 @@ __C.CNTK.FEATURE_STREAM_NAME = 'features'
 __C.CNTK.ROI_STREAM_NAME = 'roiAndLabel'
 __C.CNTK.DIMS_STREAM_NAME = 'dims'
 
-
 #
 # Data sets
 #
-
 
 __C.CNTK.CLASS_MAP_FILE = "class_map.txt"
 __C.CNTK.TRAIN_MAP_FILE = "train_img_file.txt"
