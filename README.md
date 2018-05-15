@@ -214,7 +214,15 @@ Mean AP = 0.4489
 
 Trained model, neural network topology and evaluated images (with plotted results) can later be found in `Output` folder located in `Detection/FasterRCNN`.
 
+### 3.3 False-positive errors analysis
+[[back to the top]](#table-of-contents)
+
+To turn on the false-positive errors analysis, a text file named `class_confusions.txt` should be put in the woring dataset directory and filled with the confusion pairs, i.e. two similar object categories. For example, if the object *toilet* is similar to the object *bathtub*, the pair is formed like `toilet:bathtub` ended by the newline.
+
+There are already two simple `class_confusions.txt` files given in the two datasets respectively. The analysis results are stored in the `Output` folder and named as `{basemodel}_{training}_fps.txt`. If the confusion description file is not found, the false-positive analysis will be shut down automatically.
+
 <br><br>
+
 
 # 4. Code highlights
 [[back to the top]](#table-of-contents)
@@ -246,6 +254,12 @@ Trained model, neural network topology and evaluated images (with plotted result
 
         ```Python
         __C.CNTK.BASE_MODEL = "AlexNet" # "VGG16" or "AlexNet" or "VGG19"
+        ```
+
+	- `RESULTS_NMS_SOFT` determines if the model replace the original Non-maximum Suppression (NMS) algorithm with the revised version **Soft-NMS**. If turning on the Soft-NMS, must also set up a suitable NMS confidence, `__C.CNTK.RESULTS_NMS_CONF_THRESHOLD`, threshold to terminate the increased iteratioons of NMS procedure.
+	
+        ```Python
+        __C.CNTK.RESULTS_NMS_SOFT = False
         ```
 
 - [requirements.txt](Detection/FasterRCNN/requirements.txt)
