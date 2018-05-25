@@ -117,9 +117,15 @@ def cv2DrawText(img, pt, text, color = (255,255,255), colorBackground = None):
     font                   = cv2.FONT_HERSHEY_SIMPLEX
     fontScale              = 0.6
     lineType               =1
+<<<<<<< HEAD
     cv2.putText(img,text,
         pt,
         font,
+=======
+    cv2.putText(img,text, 
+        pt, 
+        font, 
+>>>>>>> 69349d6b222af4ad59791541eb936ca97c683685
         fontScale,
         color,
         lineType)
