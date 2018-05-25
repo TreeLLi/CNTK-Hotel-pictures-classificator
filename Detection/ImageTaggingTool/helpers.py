@@ -66,7 +66,7 @@ def rotationFromExifTag(imgPath):
             error
     return rotation
 
-def drawRectangles(img, rects, color = (0, 255, 0), thickness = 2):
+def drawRectangles(img, rects, color = (0, 255, 0), thickness = 2):    
     for rect in rects:
         pt1 = tuple(ToIntegers(rect[0:2]))
         pt2 = tuple(ToIntegers(rect[2:]))
@@ -125,7 +125,7 @@ def cv2DrawText(img, pt, text, color = (255,255,255), colorBackground = None):
         lineType)
 
 
-def pilDrawText(pilImg, pt, text, textWidth=None, color = (255,255,255), colorBackground = None, font = ImageFont.truetype(available_font, 16)):
+def pilDrawText(pilImg, pt, text, textWidth=None, color = (255,255,255), colorBackground = None, font = ImageFont.truetype("arial.ttf", 16)):
     textY = pt[1]
     draw = ImageDraw.Draw(pilImg)
     if textWidth == None:
@@ -140,7 +140,7 @@ def pilDrawText(pilImg, pt, text, textWidth=None, color = (255,255,255), colorBa
         textY += height
     return pilImg
 
-def drawText(img, pt, text, textWidth=None, color = (255,255,255), colorBackground = None, font = ImageFont.truetype(available_font, 16)):
+def drawText(img, pt, text, textWidth=None, color = (255,255,255), colorBackground = None, font = ImageFont.truetype("arial.ttf", 16)):
     pilImg = imconvertCv2Pil(img)
     pilImg = pilDrawText(pilImg,  pt, text, textWidth, color, colorBackground, font)
     return imconvertPil2Cv(pilImg)
